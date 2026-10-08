@@ -1,0 +1,337 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://andritz.example/schemas/task-creation-planner-output.schema.json",
+  "title": "Task Creation in Planner Output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "generatedAt",
+    "targetPlan",
+    "completed",
+    "summary",
+    "createdBuckets",
+    "results",
+    "warnings"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.1"
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "targetPlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "id",
+        "groupId"
+      ],
+      "properties": {
+        "name": {
+          "const": "Demo Todos"
+        },
+        "id": {
+          "const": "DDjY51B1q0yenINc9Whg6mUAHVGH"
+        },
+        "groupId": {
+          "const": "5c528c8f-bae5-48c7-81ba-ca4d5182c7a3"
+        }
+      }
+    },
+    "completed": {
+      "type": "boolean"
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "inputCount",
+        "processedCount",
+        "createdCount",
+        "updatedCount",
+        "skippedCount",
+        "failedCount",
+        "unprocessedCount"
+      ],
+      "properties": {
+        "inputCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "processedCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "createdCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "updatedCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "skippedCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "failedCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "unprocessedCount": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "createdBuckets": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/bucket"
+      }
+    },
+    "results": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/taskResult"
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "$defs": {
+    "bucket": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "taskResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidateId",
+        "decision",
+        "status",
+        "plannerTaskId",
+        "bucket",
+        "title",
+        "dueDateTime",
+        "category",
+        "priority",
+        "plannerPriority",
+        "project",
+        "source",
+        "error"
+      ],
+      "properties": {
+        "candidateId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "decision": {
+          "type": "string",
+          "enum": [
+            "create",
+            "ignore",
+            "update"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "created",
+            "updated",
+            "skipped",
+            "failed"
+          ]
+        },
+        "plannerTaskId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "bucket": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/bucket"
+            }
+          ]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dueDateTime": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "category": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "Project WBS Task",
+            "Todo",
+            "Decision",
+            "Meeting request",
+            null
+          ]
+        },
+        "priority": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "Urgent",
+            "High",
+            "Medium",
+            "Low",
+            null
+          ]
+        },
+        "plannerPriority": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "enum": [
+            1,
+            3,
+            5,
+            9,
+            null
+          ]
+        },
+        "project": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "name",
+                "code"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "code": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "source": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "channel",
+            "sender",
+            "itemId",
+            "referenceType",
+            "reference"
+          ],
+          "properties": {
+            "channel": {
+              "type": "string",
+              "enum": [
+                "email",
+                "teams"
+              ]
+            },
+            "sender": {
+              "type": "string",
+              "minLength": 1
+            },
+            "itemId": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "referenceType": {
+              "type": "string",
+              "enum": [
+                "item-id",
+                "internet-message-id",
+                "web-url",
+                "derived"
+              ]
+            },
+            "reference": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "error": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "operation",
+                "message",
+                "manualCleanupMayBeRequired"
+              ],
+              "properties": {
+                "operation": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "manualCleanupMayBeRequired": {
+                  "type": "boolean"
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}

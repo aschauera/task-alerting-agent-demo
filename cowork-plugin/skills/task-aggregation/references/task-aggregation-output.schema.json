@@ -1,0 +1,256 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://andritz.example/schemas/task-aggregation-output.schema.json",
+  "title": "Task Aggregation Output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "generatedAt",
+    "window",
+    "taskCount",
+    "tasks",
+    "warnings"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.1"
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "window": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "start",
+        "end",
+        "lookbackDays",
+        "timeZone"
+      ],
+      "properties": {
+        "start": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "end": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "lookbackDays": {
+          "const": 7
+        },
+        "timeZone": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "taskCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "tasks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/taskCandidate"
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "$defs": {
+    "confidence": {
+      "type": "string",
+      "enum": [
+        "high",
+        "medium",
+        "low"
+      ]
+    },
+    "taskCandidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidateId",
+        "taskTitle",
+        "description",
+        "inferredDueDate",
+        "inferredProject",
+        "source"
+      ],
+      "properties": {
+        "candidateId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "taskTitle": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "inferredDueDate": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "timeZone",
+                "confidence",
+                "evidence"
+              ],
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "minLength": 10
+                },
+                "timeZone": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "confidence": {
+                  "$ref": "#/$defs/confidence"
+                },
+                "evidence": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          ]
+        },
+        "inferredProject": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "name",
+                "code",
+                "confidence",
+                "evidence"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "code": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "confidence": {
+                  "$ref": "#/$defs/confidence"
+                },
+                "evidence": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          ]
+        },
+        "source": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "channel",
+            "itemId",
+            "internetMessageId",
+            "conversationId",
+            "reference",
+            "referenceType",
+            "sender",
+            "receivedDateTime",
+            "subject",
+            "webUrl",
+            "evidence"
+          ],
+          "properties": {
+            "channel": {
+              "type": "string",
+              "enum": [
+                "email",
+                "teams"
+              ]
+            },
+            "itemId": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "internetMessageId": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "conversationId": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "reference": {
+              "type": "string",
+              "minLength": 1
+            },
+            "referenceType": {
+              "type": "string",
+              "enum": [
+                "item-id",
+                "internet-message-id",
+                "web-url",
+                "derived"
+              ]
+            },
+            "sender": {
+              "type": "string",
+              "minLength": 1
+            },
+            "receivedDateTime": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "subject": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "webUrl": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "evidence": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    }
+  }
+}

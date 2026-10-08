@@ -1,0 +1,463 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://andritz.example/schemas/task-deduplication-output.schema.json",
+  "title": "Task Deduplication Output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "generatedAt",
+    "targetPlan",
+    "summary",
+    "tasks",
+    "warnings"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.1"
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "targetPlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "id",
+        "groupId"
+      ],
+      "properties": {
+        "name": {
+          "const": "Demo Todos"
+        },
+        "id": {
+          "const": "DDjY51B1q0yenINc9Whg6mUAHVGH"
+        },
+        "groupId": {
+          "const": "5c528c8f-bae5-48c7-81ba-ca4d5182c7a3"
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "inputCount",
+        "uniqueCount",
+        "duplicateCount",
+        "createCount",
+        "ignoreCount",
+        "updateCount"
+      ],
+      "properties": {
+        "inputCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "uniqueCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "duplicateCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "createCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "ignoreCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "updateCount": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "tasks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/deduplicatedTask"
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "$defs": {
+    "confidence": {
+      "type": "string",
+      "enum": [
+        "high",
+        "medium",
+        "low"
+      ]
+    },
+    "taskCandidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidateId",
+        "taskTitle",
+        "description",
+        "inferredDueDate",
+        "inferredProject",
+        "source"
+      ],
+      "properties": {
+        "candidateId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "taskTitle": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "inferredDueDate": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "timeZone",
+                "confidence",
+                "evidence"
+              ],
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "minLength": 10
+                },
+                "timeZone": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "confidence": {
+                  "$ref": "#/$defs/confidence"
+                },
+                "evidence": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          ]
+        },
+        "inferredProject": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "name",
+                "code",
+                "confidence",
+                "evidence"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "code": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "confidence": {
+                  "$ref": "#/$defs/confidence"
+                },
+                "evidence": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          ]
+        },
+        "source": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "channel",
+            "itemId",
+            "internetMessageId",
+            "conversationId",
+            "reference",
+            "referenceType",
+            "sender",
+            "receivedDateTime",
+            "subject",
+            "webUrl",
+            "evidence"
+          ],
+          "properties": {
+            "channel": {
+              "type": "string",
+              "enum": [
+                "email",
+                "teams"
+              ]
+            },
+            "itemId": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "internetMessageId": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "conversationId": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "reference": {
+              "type": "string",
+              "minLength": 1
+            },
+            "referenceType": {
+              "type": "string",
+              "enum": [
+                "item-id",
+                "internet-message-id",
+                "web-url",
+                "derived"
+              ]
+            },
+            "sender": {
+              "type": "string",
+              "minLength": 1
+            },
+            "receivedDateTime": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "subject": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "webUrl": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "evidence": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "scoreBreakdown": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "title",
+        "outcome",
+        "project",
+        "dueDate",
+        "source"
+      ],
+      "properties": {
+        "title": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 40
+        },
+        "outcome": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 25
+        },
+        "project": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 15
+        },
+        "dueDate": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10
+        },
+        "source": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10
+        }
+      }
+    },
+    "plannerTask": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "description",
+        "dueDateTime",
+        "priority",
+        "percentComplete",
+        "bucketId",
+        "appliedCategories",
+        "etag"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "dueDateTime": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "priority": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 10
+        },
+        "percentComplete": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "bucketId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "appliedCategories": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "boolean"
+          }
+        },
+        "etag": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "duplicateMatch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "plannerTask",
+        "likenessScore",
+        "classification",
+        "scoreBreakdown",
+        "matchReasons"
+      ],
+      "properties": {
+        "plannerTask": {
+          "$ref": "#/$defs/plannerTask"
+        },
+        "likenessScore": {
+          "type": "integer",
+          "minimum": 70,
+          "maximum": 100
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "possible-duplicate",
+            "likely-duplicate"
+          ]
+        },
+        "scoreBreakdown": {
+          "$ref": "#/$defs/scoreBreakdown"
+        },
+        "matchReasons": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "deduplicatedTask": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidate",
+        "decision",
+        "selectedPlannerTaskId",
+        "duplicateMatches"
+      ],
+      "properties": {
+        "candidate": {
+          "$ref": "#/$defs/taskCandidate"
+        },
+        "decision": {
+          "type": "string",
+          "enum": [
+            "create",
+            "ignore",
+            "update"
+          ]
+        },
+        "selectedPlannerTaskId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "duplicateMatches": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/duplicateMatch"
+          }
+        }
+      }
+    }
+  }
+}

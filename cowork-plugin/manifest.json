@@ -1,0 +1,42 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/teams/v1.28/MicrosoftTeams.schema.json",
+  "manifestVersion": "devPreview",
+  "version": "1.4.0",
+  "id": "3dd37237-2775-4421-b58b-cc39ce92dbe2",
+  "developer": {
+    "name": "ANDRITZ Hydropower Demo",
+    "websiteUrl": "https://www.andritz.com/hydro-en",
+    "privacyUrl": "https://www.andritz.com/group-en/meta/data-privacy-declaration",
+    "termsOfUseUrl": "https://www.andritz.com/group-en/meta/terms-of-use"
+  },
+  "name": {
+    "short": "ANDRITZ Task Intake",
+    "full": "ANDRITZ Hydropower Task Intake for Copilot Cowork"
+  },
+  "description": {
+    "short": "Turn Outlook and Teams requests into categorized Planner tasks.",
+    "full": "Turn incoming Outlook email and Teams messages into structured Planner work for ANDRITZ Hydropower. Run the complete governed workflow or use each processing skill independently. The end-to-end workflow reviews requests from the last seven days, extracts outcomes, due dates, and project references, detects possible duplicates, applies predefined categories and priorities, requests final approval, and creates or updates tasks and buckets in the Demo Todos plan while preserving source traceability.\n\n**Key capabilities**\n\n- Run aggregation, deduplication, categorization, prioritization, and Planner creation in the required order\n- Find actionable requests in recent Outlook email and direct Teams messages\n- Normalize task titles, requested outcomes, due dates, projects, and source metadata\n- Compare candidates with existing Planner tasks and show an explainable likeness score\n- Ask users to Ignore or Update possible duplicates before continuing\n- Categorize work as Project WBS Task, Todo, Decision, or Meeting request\n- Assign Urgent, High, Medium, or Low priority using deterministic rules\n- Show a final change preview and require approval before writing to Planner\n- Create missing project or category buckets and create or update Planner tasks\n\n**Requirements**\n\n- A Microsoft 365 Copilot license with access to Copilot Cowork is required.\n- Work IQ must be able to access the signed-in user's Outlook email and Teams messages.\n- The Microsoft Planner connector must be authorized for the Demo Todos plan.\n- The signed-in identity must have permission to read and write tasks and buckets in that plan.\n\n**Limitations**\n\n- The plugin processes incoming requests from the last seven days only.\n- Duplicate resolution and final Planner mutation require explicit user choices.\n- The plugin targets the configured Demo Todos plan and is not a general multi-plan task manager.\n- Skill orchestration is instruction-driven; use a deterministic Copilot Studio workflow where technical execution guarantees are required.\n- Inferred due dates, projects, categories, and priorities can be incorrect and should be reviewed before Planner changes are approved.\n\n**Get started:** [Microsoft Planner](https://planner.cloud.microsoft/)\n\n**Support:** Contact the ANDRITZ Hydropower demo owner for access and configuration support.\n\n**Language support:** The plugin can interpret natural-language requests, but results depend on source clarity and the languages supported by Microsoft 365 Copilot and Work IQ."
+  },
+  "icons": {
+    "color": "color.png",
+    "outline": "outline.png"
+  },
+  "accentColor": "#002F5F",
+  "agentSkills": [
+    {
+      "folder": "./skills/task-aggregation"
+    },
+    {
+      "folder": "./skills/task-deduplication"
+    },
+    {
+      "folder": "./skills/task-categorization-prioritization"
+    },
+    {
+      "folder": "./skills/task-creation-planner"
+    },
+    {
+      "folder": "./skills/task-intake-workflow"
+    }
+  ]
+}

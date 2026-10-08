@@ -1,0 +1,488 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://andritz.example/schemas/task-categorization-prioritization-output.schema.json",
+  "title": "Task Categorization and Prioritization Output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "generatedAt",
+    "targetPlan",
+    "summary",
+    "tasks",
+    "warnings"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.1"
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "targetPlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "id",
+        "groupId"
+      ],
+      "properties": {
+        "name": {
+          "const": "Demo Todos"
+        },
+        "id": {
+          "const": "DDjY51B1q0yenINc9Whg6mUAHVGH"
+        },
+        "groupId": {
+          "const": "5c528c8f-bae5-48c7-81ba-ca4d5182c7a3"
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "inputCount",
+        "classifiedCount",
+        "ignoredCount",
+        "categoryCounts",
+        "priorityCounts"
+      ],
+      "properties": {
+        "inputCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "classifiedCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "ignoredCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "categoryCounts": {
+          "$ref": "#/$defs/categoryCounts"
+        },
+        "priorityCounts": {
+          "$ref": "#/$defs/priorityCounts"
+        }
+      }
+    },
+    "tasks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/classifiedTask"
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "$defs": {
+    "confidence": {
+      "type": "string",
+      "enum": [
+        "high",
+        "medium",
+        "low"
+      ]
+    },
+    "taskCandidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidateId",
+        "taskTitle",
+        "description",
+        "inferredDueDate",
+        "inferredProject",
+        "source"
+      ],
+      "properties": {
+        "candidateId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "taskTitle": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "inferredDueDate": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "timeZone",
+                "confidence",
+                "evidence"
+              ],
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "minLength": 10
+                },
+                "timeZone": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "confidence": {
+                  "$ref": "#/$defs/confidence"
+                },
+                "evidence": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          ]
+        },
+        "inferredProject": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "name",
+                "code",
+                "confidence",
+                "evidence"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "code": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "confidence": {
+                  "$ref": "#/$defs/confidence"
+                },
+                "evidence": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          ]
+        },
+        "source": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "channel",
+            "itemId",
+            "internetMessageId",
+            "conversationId",
+            "reference",
+            "referenceType",
+            "sender",
+            "receivedDateTime",
+            "subject",
+            "webUrl",
+            "evidence"
+          ],
+          "properties": {
+            "channel": {
+              "type": "string",
+              "enum": [
+                "email",
+                "teams"
+              ]
+            },
+            "itemId": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "internetMessageId": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "conversationId": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "reference": {
+              "type": "string",
+              "minLength": 1
+            },
+            "referenceType": {
+              "type": "string",
+              "enum": [
+                "item-id",
+                "internet-message-id",
+                "web-url",
+                "derived"
+              ]
+            },
+            "sender": {
+              "type": "string",
+              "minLength": 1
+            },
+            "receivedDateTime": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "subject": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "webUrl": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "evidence": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "deduplicationSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "decision",
+        "selectedPlannerTaskId",
+        "highestLikenessScore",
+        "existingPlannerPriority"
+      ],
+      "properties": {
+        "decision": {
+          "type": "string",
+          "enum": [
+            "create",
+            "ignore",
+            "update"
+          ]
+        },
+        "selectedPlannerTaskId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "highestLikenessScore": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 70,
+          "maximum": 100
+        },
+        "existingPlannerPriority": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 10
+        }
+      }
+    },
+    "classification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "category",
+        "categoryConfidence",
+        "categoryEvidence",
+        "priority",
+        "plannerPriority",
+        "priorityConfidence",
+        "priorityEvidence",
+        "routing"
+      ],
+      "properties": {
+        "category": {
+          "type": "string",
+          "enum": [
+            "Project WBS Task",
+            "Todo",
+            "Decision",
+            "Meeting request"
+          ]
+        },
+        "categoryConfidence": {
+          "$ref": "#/$defs/confidence"
+        },
+        "categoryEvidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "priority": {
+          "type": "string",
+          "enum": [
+            "Urgent",
+            "High",
+            "Medium",
+            "Low"
+          ]
+        },
+        "plannerPriority": {
+          "type": "integer",
+          "enum": [
+            1,
+            3,
+            5,
+            9
+          ]
+        },
+        "priorityConfidence": {
+          "$ref": "#/$defs/confidence"
+        },
+        "priorityEvidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "routing": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "bucketName",
+            "createBucketIfMissing",
+            "reason"
+          ],
+          "properties": {
+            "bucketName": {
+              "type": "string",
+              "minLength": 1
+            },
+            "createBucketIfMissing": {
+              "const": true
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "classifiedTask": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidate",
+        "deduplication",
+        "classification"
+      ],
+      "properties": {
+        "candidate": {
+          "$ref": "#/$defs/taskCandidate"
+        },
+        "deduplication": {
+          "$ref": "#/$defs/deduplicationSummary"
+        },
+        "classification": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/classification"
+            }
+          ]
+        }
+      }
+    },
+    "categoryCounts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "Project WBS Task",
+        "Todo",
+        "Decision",
+        "Meeting request"
+      ],
+      "properties": {
+        "Project WBS Task": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "Todo": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "Decision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "Meeting request": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "priorityCounts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "Urgent",
+        "High",
+        "Medium",
+        "Low"
+      ],
+      "properties": {
+        "Urgent": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "High": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "Medium": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "Low": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  }
+}
