@@ -57,7 +57,8 @@ function Get-GraphCollection {
             $items.Add($item)
         }
 
-        $nextLink = $response.'@odata.nextLink'
+        $nextLinkProperty = $response.PSObject.Properties['@odata.nextLink']
+        $nextLink = if ($nextLinkProperty) { $nextLinkProperty.Value } else { $null }
     }
 
     return $items
@@ -112,15 +113,17 @@ $encodedPlanId = [uri]::EscapeDataString($PlanId)
 $matchedTasks = [System.Collections.Generic.List[object]]::new()
 
 try {
-    Disconnect-MgGraph -ErrorAction SilentlyContinue | Out-Null
     Connect-MgGraph `
         -TenantId $TenantId `
         -Scopes 'Tasks.ReadWrite' `
-        -UseDeviceCode `
-        -ContextScope Process `
+        -ContextScope CurrentUser `
         -NoWelcome
 
     $context = Get-MgContext
+
+    if (-not $context) {
+        throw 'Microsoft Graph did not return an authenticated context.'
+    }
 
     if ($context.TenantId -ne $TenantId) {
         throw "Authenticated tenant '$($context.TenantId)' does not match required tenant '$TenantId'."
@@ -200,5 +203,5 @@ try {
     Write-Host "Cleanup complete. Deleted $deletedCount of $($matchedTasks.Count) matched demo task(s)."
 }
 finally {
-    Disconnect-MgGraph -ErrorAction SilentlyContinue | Out-Null
+    # Keep the CurrentUser Graph context cached so later runs can reuse authentication.
 }
